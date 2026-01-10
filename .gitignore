@@ -416,3 +416,12 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Angular / Node
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+yarn-error.log*
+.env
+.env.local
