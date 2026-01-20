@@ -10,11 +10,13 @@
     <Folder Include="Data/" />
     <Folder Include="DTOs/" />
     <Folder Include="Entities/" />
+    <Folder Include="Extensions/" />
     <Folder Include="Interfaces/" />
     <Folder Include="Services/" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.22" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.22" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.22" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.2" />
