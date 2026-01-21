@@ -9,9 +9,9 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './nav.component.css'
 })
 export class NavComponent {
- model: any = {};
+  model: any = {};
  
- login() {
+  login() {
   console.log(this.model);
- }
+  }
 }
