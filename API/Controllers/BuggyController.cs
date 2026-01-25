@@ -14,6 +14,7 @@ public class BuggyController(DataContext context) : BaseApiController
     {
         return "secret text";
     }
+
     [HttpGet("not-found")]
     public ActionResult<AppUser> GetNotFound()
     {
@@ -23,6 +24,7 @@ public class BuggyController(DataContext context) : BaseApiController
 
         return thing;
     }
+
     [HttpGet("server-error")]
     public ActionResult<AppUser> GetServerError()
     {
