@@ -7,14 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Data/UserSeedData.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="Data/UserSeedData.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="DTOs/" />
     <Folder Include="Entities/" />
     <Folder Include="Errors/" />
