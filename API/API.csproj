@@ -11,12 +11,14 @@
     <Folder Include="Entities/" />
     <Folder Include="Errors/" />
     <Folder Include="Extensions/" />
+    <Folder Include="Helpers/" />
     <Folder Include="Interfaces/" />
     <Folder Include="Middleware/" />
     <Folder Include="Services/" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.22" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.22" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.22" />
