@@ -2,18 +2,35 @@
     <h2 class="text-center text-primary">Sign up</h2>
     <hr>
     <div class="mb-3 form-floating">
-        <input type="text" class="form-control" name="username" formControlName="username" placeholder="Username">
+        <input type="text" class="form-control" name="username" formControlName="username" placeholder="Username"
+            [class.is-invalid]="registerForm.get('username')?.errors &&
+             registerForm.get('username')?.touched">
         <label>Username</label>
+        <div class="invalid-feedback text-start">Please enter a username</div>
     </div>
 
     <div class="mb-3 form-floating">
-        <input type="password" class="form-control" name="password" formControlName="password" placeholder="Password">
+        <input [class.is-invalid]="registerForm.get('password')?.errors &&
+             registerForm.get('password')?.touched" type="password" class="form-control" name="password"
+            formControlName="password" placeholder="Password">
         <label>Password</label>
+        <div *ngIf="registerForm.get('password')?.hasError('required')" class="invalid-feedback text-start">
+            Password is required</div>
+        <div *ngIf="registerForm.get('password')?.hasError('minlength')" class="invalid-feedback text-start">
+            Password must be at least 4 characters</div>
+        <div *ngIf="registerForm.get('password')?.hasError('maxlength')" class="invalid-feedback text-start">
+            Pasword must be at most 8 characters</div>
     </div>
+
     <div class="mb-3 form-floating">
-        <input type="password" class="form-control" name="password" formControlName="confirmPassword"
-            placeholder="Confirm Password">
+        <input [class.is-invalid]="registerForm.get('confirmPassword')?.errors &&
+             registerForm.get('confirmPassword')?.touched" type="password" class="form-control" name="password"
+            formControlName="confirmPassword" placeholder="Confirm Password">
         <label>Confirm Password</label>
+        <div *ngIf="registerForm.get('confirmPassword')?.hasError('required')" class="invalid-feedback text-start">
+            Please enter a password</div>
+        <div *ngIf="registerForm.get('confirmPassword')?.hasError('isMatching')" class="invalid-feedback text-start">
+            Confirm your password is matching </div>
     </div>
     <div class="form-group text-center">
         <button class="btn btn-success me-2" type="submit">Register</button>
