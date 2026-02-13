@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Member } from '../_models/member';
@@ -13,10 +13,14 @@ import { UserParams } from '../_models/userParams';
 export class MembersService {
   private http = inject(HttpClient);
   baseUrl = environment.apiUrl;
-  // members=signal<Member[]>([]);
   paginatedResult = signal<PaginatedResult<Member[]> | null>(null);
+  memberCache = new Map();
 
   getMembers(UserParams: UserParams) {
+    const response = this.memberCache.get(Object.values(UserParams).join('-'))
+
+    if(response) return this.setPaginatedResponse(response);
+
     let params = this.setPaginationHeaders(UserParams.pageNumber,UserParams.pageSize);
 
     params = params.append('minAge',UserParams.minAge);
@@ -26,12 +30,17 @@ export class MembersService {
 
     return this.http.get<Member[]>(this.baseUrl + 'users',{observe:'response',params}).subscribe({
       next: response => {
-        this.paginatedResult.set({
+        this.setPaginatedResponse(response);
+        this.memberCache.set(Object.values(UserParams).join('-'),response);
+      }
+    });
+  }
+
+  private setPaginatedResponse(response:HttpResponse<Member[]>){
+    this.paginatedResult.set({
           items:response.body as Member[],
           pagination:JSON.parse(response.headers.get('Pagination')!)
         })
-      }
-    });
   }
 
   private setPaginationHeaders(pageNumber:number,pageSize:number){
@@ -46,8 +55,11 @@ export class MembersService {
   }
 
   getMember(username: string) {
-  //  const member=this.members().find(x =>x.username === username);
-  //  if(member != undefined) return of(member);
+   const member:Member = [...this.memberCache.values()]
+      .reduce((arr,elem)=> arr.concat(elem.body),[])
+      .find((m:Member) => m.username === username);
+
+    if(member) return of(member);
 
     return this.http.get<Member>(this.baseUrl + 'users/' + username);
   }

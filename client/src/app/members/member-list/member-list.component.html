@@ -54,7 +54,7 @@
     <pagination [boundaryLinks]="true" [totalItems]="memberService.paginatedResult()?.pagination!.totalItems"
         previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;"
         [itemsPerPage]="memberService.paginatedResult()?.pagination!.itemsPerPage" (pageChanged)="pageChanged($event)"
-        [maxSize]="10">
+        [maxSize]="10" [(ngModel)]="memberService.paginatedResult()?.pagination!.currentPage">
 
     </pagination>
 </div>
