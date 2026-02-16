@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { PaginatedResult } from '../_models/pagination';
 import { Message } from '../_models/message';
 import { setPaginatedResponse, setPaginationHeaders } from './paginationHelper';
+import { ThumbnailsPosition } from 'ng-gallery';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,10 @@ export class MessageService {
     return this.http.get<Message[]>(this.baseUrl+'messages',{observe:'response',params}).subscribe({
       next : response => setPaginatedResponse(response,this.paginatedResult)
     })
+  }
+
+  getMessageThread(username:string){
+    return this.http.get<Message[]>(this.baseUrl + 'messages/thread/' + username);
   }
  
 }
