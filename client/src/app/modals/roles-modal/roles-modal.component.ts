@@ -11,7 +11,23 @@ import { CdkScrollable } from "@angular/cdk/scrolling";
 })
 export class RolesModalComponent {
   bsModalRef = inject(BsModalRef);
+  username = '';
   title = '';
-  list: string[] = [];
+  availableRoles: string[] = [];
+  selectedRoles: string[] = [];
+  rolesUpdated = false;
 
+  updateChecked(checkedValue: string) {
+    if (this.selectedRoles.includes(checkedValue)) {
+      this.selectedRoles = this.selectedRoles.filter(r => r !== checkedValue);
+    }
+    else {
+      this.selectedRoles.push(checkedValue);
+    }
+  }
+
+  onSelectRoles() {
+    this.rolesUpdated = true;
+    this.bsModalRef.hide();
+  }
 }
