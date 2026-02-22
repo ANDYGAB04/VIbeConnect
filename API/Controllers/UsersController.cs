@@ -30,11 +30,8 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
     [HttpGet("{username}")] // api/users/username
     public async Task<ActionResult<MemberDto>> GetUser(string username)
     {
-        var user = await unitOfWork.UserRepository.GetMemberAsync(username);
-
-        if (user == null) return NotFound();
-
-        return user;
+        var curentUsername = User.GetUsername();
+        return await unitOfWork.UserRepository.GetMemberAsync(username, isCurrentUser: curentUsername == username);
     }
 
     [HttpPut]
@@ -69,7 +66,6 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
             PublicId = result.PublicId
         };
 
-        if (user.Photos.Count == 0) photo.IsMain = true;
 
         user.Photos.Add(photo);
 
@@ -109,7 +105,7 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
 
         if (user == null) return BadRequest("Cannot update user");
 
-        var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+        var photo = await unitOfWork.PhotoRepository.GetPhotoById(photoId);
 
         if (photo == null || photo.IsMain) return BadRequest("Cannot delete this photo");
 
