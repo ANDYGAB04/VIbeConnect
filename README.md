@@ -1,6 +1,15 @@
 # VibeConnect
 
-A full-stack dating/social platform built with **Angular 17** and **ASP.NET Core 8**. Users can create profiles, browse and like other members, exchange real-time messages, and upload photos — all wrapped in a responsive, modern UI.
+A modern full-stack dating/social platform connecting people across the globe. Built with **Angular 17** and **ASP.NET Core 8**, VibeConnect offers real-time messaging, member discovery, and a seamless user experience.
+
+**Key Highlights:**
+- Real-time messaging powered by SignalR
+- Smart member discovery with advanced filtering
+- Photo management with admin moderation
+- Like/match system with notifications  
+- Secure JWT-based authentication
+- Fully responsive and mobile-friendly
+- Docker-ready deployment
 
 ---
 
@@ -13,10 +22,14 @@ A full-stack dating/social platform built with **Angular 17** and **ASP.NET Core
   - [Prerequisites](#prerequisites)
   - [Backend Setup](#backend-setup)
   - [Frontend Setup](#frontend-setup)
+  - [Docker Setup](#docker-setup)
 - [Project Structure](#project-structure)
+- [Configuration](#configuration)
 - [API Endpoints](#api-endpoints)
 - [Real-Time Communication](#real-time-communication)
 - [Authentication & Authorization](#authentication--authorization)
+- [Development Guide](#development-guide)
+- [Troubleshooting](#troubleshooting)
 - [License](#license)
 
 ---
@@ -150,6 +163,63 @@ ng serve
 
 The app will be available at `https://localhost:4200`.
 
+### Docker Setup
+
+The entire application can be run with Docker Compose for a consistent development and deployment experience.
+
+```bash
+# Build and start all services (API + client)
+docker-compose up --build
+
+# Run in detached mode
+docker-compose up -d
+
+# Stop services
+docker-compose down
+
+# View logs
+docker-compose logs -f
+```
+
+Services will be available at:
+- **Frontend:** http://localhost:4200
+- **Backend API:** http://localhost:5000
+
+**Note:** Ensure your `appsettings.json` is properly configured with Cloudinary credentials before running with Docker.
+
+---
+
+## Configuration
+
+### Backend Configuration (`appsettings.json`)
+
+Create or update `API/appsettings.json` with the following settings:
+
+```json
+{
+  "CloudinarySettings": {
+    "CloudName": "your-cloudinary-cloud-name",
+    "ApiKey": "your-api-key",
+    "ApiSecret": "your-api-secret"
+  },
+  "TokenKey": "your-super-secret-token-key-minimum-64-characters-for-security",
+  "ConnectionStrings": {
+    "DefaultConnection": "Data Source=dating.db"
+  }
+}
+```
+
+**Required Environment Variables:**
+- `CloudName` — Your Cloudinary account cloud name (get from [Cloudinary Dashboard](https://cloudinary.com/console))
+- `ApiKey` & `ApiSecret` — Cloudinary API credentials
+- `TokenKey` — A secure random string for JWT token signing (at least 64 characters recommended)
+
+### Frontend Configuration
+
+The Angular frontend is configured in `client/src/environments/`. By default, it connects to:
+- **Development:** `http://localhost:5000`
+- **Production:** Your deployed backend URL
+
 ---
 
 ## Project Structure
@@ -274,6 +344,121 @@ VibeConnect uses **two SignalR hubs**:
 
 ---
 
+## Development Guide
+
+### Running the Backend in Watch Mode
+
+For auto-reload during development:
+
+```bash
+cd API
+dotnet watch run
+```
+
+This watches for file changes and automatically restarts the API server.
+
+### Running the Frontend in Watch Mode
+
+Angular's `ng serve` already includes hot module reloading:
+
+```bash
+cd client
+ng serve
+```
+
+Changes to components, services, and templates are reflected instantly in the browser.
+
+### Debugging
+
+**Backend (Visual Studio Code):**
+1. Install the C# Dev Kit extension
+2. Set breakpoints in VS Code (click margin next to line number)
+3. Run `dotnet run` or use `Debug > Start Debugging`
+
+**Frontend (Browser DevTools):**
+1. Open Chrome/Edge DevTools (F12)
+2. Go to **Sources** tab and set breakpoints in `.ts` files
+3. Angular automatically generates source maps in development mode
+
+### Adding New Features
+
+**Backend (Add a new API endpoint):**
+1. Create an Entity class in `API/Entities/`
+2. Add DbSet to `DataContext`
+3. Create a migration: `dotnet ef migrations add MigrationName`
+4. Create a Repository interface in `API/Interfaces/`
+5. Implement it in `API/Data/`
+6. Register in `ApplicationServiceExtensions.cs`
+7. Create a DTO for requests/responses
+8. Add the controller logic
+
+**Frontend (Add a new component):**
+1. Generate: `ng generate component components/my-component`
+2. Add the route in the routing module
+3. Implement the component logic
+4. Add service methods as needed
+
+---
+
+## Troubleshooting
+
+### Backend Won't Start
+
+**Error:** `Unable to bind to http://localhost:5000 on the IPv4 loopback interface.`
+
+**Solution:** The port is already in use. Either:
+- Kill the process: `lsof -i :5000` then `kill -9 <PID>` (Linux/Mac) or `netstat -ano | findstr :5000` (Windows)
+- Change the port in `appsettings.json` or launch settings
+
+### Database Issues
+
+**Error:** `SQLite database locked`
+
+**Solution:** 
+- Close all existing connections to the database
+- Delete the database file (`dating.db`) and run `dotnet run` to create a fresh one
+- Make sure migrations are up to date: `dotnet ef database update`
+
+### Cloudinary Upload Fails
+
+**Error:** `401 Unauthorized` or photo upload hangs
+
+**Solutions:**
+- Verify `appsettings.json` has correct Cloudinary credentials
+- Check that the Cloudinary account is active (not trial expired)
+- Ensure API Key and Secret are correct from Cloudinary dashboard
+
+### CORS Errors
+
+**Error:** `Access to XMLHttpRequest blocked by CORS policy`
+
+**Solution:**
+- The API is configured to accept requests from the Angular frontend
+- Ensure backend is running before frontend tries to connect
+- Check `Program.cs` for CORS configuration
+
+### SignalR Connection Issues
+
+**Error:** `WebSocket connection failed` or real-time messages not arriving
+
+**Solutions:**
+- Ensure WebSocket protocol is supported in your network/proxy
+- Clear browser cache and refresh
+- Check browser DevTools Network tab for failed WebSocket upgrade
+- Verify JWT token is valid and included in SignalR connection
+
+### Port Conflicts
+
+**Default ports:**
+- Frontend: 4200
+- Backend: 5000 (HTTP) / 5001 (HTTPS)
+
+Change ports in: - `client/angular.json` → `serve` → `options` → `port`
+- `API/Properties/launchSettings.json` → `applicationUrl`
+
+---
+
 ## License
 
 This project is for educational and portfolio purposes.
+
